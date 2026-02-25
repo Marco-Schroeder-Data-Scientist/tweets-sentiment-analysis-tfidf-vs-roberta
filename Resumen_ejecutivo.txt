@@ -1,0 +1,22 @@
+Resumen Ejecutivo
+Este proyecto compara enfoques clásicos de NLP (TF-IDF + Logistic Regression, Random Forest, BernoulliNB) contra un transformer moderno pre-entrenado en tweets (cardiffnlp/twitter-roberta-base-sentiment-latest) en un dataset clásico de ~30.000 tweets en inglés etiquetados con emociones (2009–2011).
+Metodología principal
+
+Preprocesamiento: limpieza ligera, remoción de stopwords, lematización
+Vectorización: TF-IDF con n-gramas (1–2)
+Modelos clásicos: GridSearchCV con optimización por ROC-AUC
+Benchmark: RoBERTa con pipeline de Hugging Face (mapeo neutral/positive → positive)
+Métricas: Accuracy, Precision, Recall, F1, ROC-AUC, Log Loss
+
+Resultados clave
+
+Mejor modelo clásico: ~70.5–71% accuracy (balanceado, buen recall en ambas clases)
+RoBERTa twitter-latest: ~40% accuracy (predijo casi todos los tweets como negativos)
+Explicación principal: fuerte domain shift temporal. El lenguaje, abreviaturas y contexto emocional de 2009–2011 difieren significativamente del usado para entrenar transformers actuales (2018–2025).
+
+Conclusiones y recomendaciones
+En datasets antiguos, los modelos TF-IDF + ML tradicional siguen siendo superiores y mucho más eficientes que transformers out-of-the-box.
+Para tweets recientes (2023–2026), los transformers suelen superar el 80% fácilmente.
+Próximos pasos: evaluar modelos más antiguos como Bertweet y fine-tuning en subset del dataset.
+Proyecto ideal para portafolio de NLP, tesis o demostración de fortaleza de enfoques clásicos en escenarios de datos históricos.
+Tecnologías: Python, scikit-learn, NLTK, Hugging Face Transformers, pandas, matplotlib/seaborn.
