@@ -1,22 +1,87 @@
-Resumen Ejecutivo
-Este proyecto compara enfoques clásicos de NLP (TF-IDF + Logistic Regression, Random Forest, BernoulliNB) contra un transformer moderno pre-entrenado en tweets (cardiffnlp/twitter-roberta-base-sentiment-latest) en un dataset clásico de ~30.000 tweets en inglés etiquetados con emociones (2009–2011).
-Metodología principal
+RESUMEN EJECUTIVO
+Análisis de Sentimiento en Tweets — TF-IDF vs RoBERTa
+======================================================
 
-Preprocesamiento: limpieza ligera, remoción de stopwords, lematización
-Vectorización: TF-IDF con n-gramas (1–2)
-Modelos clásicos: GridSearchCV con optimización por ROC-AUC
-Benchmark: RoBERTa con pipeline de Hugging Face (mapeo neutral/positive → positive)
-Métricas: Accuracy, Precision, Recall, F1, ROC-AUC, Log Loss
+DESCRIPCIÓN
+-----------
+Este proyecto compara enfoques clásicos de NLP (TF-IDF + Logistic Regression,
+Random Forest, BernoulliNB) contra un transformer moderno preentrenado en tweets
+(cardiffnlp/twitter-roberta-base-sentiment-latest) sobre un dataset clásico de
+~30.000 tweets en inglés etiquetados con polaridad binaria (positivo/negativo),
+correspondiente al período 2009–2011 (Sentiment140).
 
-Resultados clave
+El foco no es solo obtener el mejor modelo, sino responder una pregunta concreta:
+¿siguen siendo competitivos los modelos clásicos frente a transformers modernos
+cuando existe domain shift temporal significativo?
 
-Mejor modelo clásico: ~70.5–71% accuracy (balanceado, buen recall en ambas clases)
-RoBERTa twitter-latest: ~40% accuracy (predijo casi todos los tweets como negativos)
-Explicación principal: fuerte domain shift temporal. El lenguaje, abreviaturas y contexto emocional de 2009–2011 difieren significativamente del usado para entrenar transformers actuales (2018–2025).
 
-Conclusiones y recomendaciones
-En datasets antiguos, los modelos TF-IDF + ML tradicional siguen siendo superiores y mucho más eficientes que transformers out-of-the-box.
-Para tweets recientes (2023–2026), los transformers suelen superar el 80% fácilmente.
-Próximos pasos: evaluar modelos más antiguos como Bertweet y fine-tuning en subset del dataset.
-Proyecto ideal para portafolio de NLP, tesis o demostración de fortaleza de enfoques clásicos en escenarios de datos históricos.
-Tecnologías: Python, scikit-learn, NLTK, Hugging Face Transformers, pandas, matplotlib/seaborn.
+METODOLOGÍA
+-----------
+Preprocesamiento:
+  - Limpieza de texto: remoción de URLs, menciones, caracteres especiales
+  - Remoción de stopwords y lematización con NLTK
+  - Vectorización TF-IDF con n-gramas (1–2)
+
+Modelos clásicos entrenados:
+  - Logistic Regression
+  - Random Forest
+  - BernoulliNB
+  - Optimización con GridSearchCV (métrica objetivo: ROC-AUC)
+
+Benchmark transformer:
+  - Modelo: cardiffnlp/twitter-roberta-base-sentiment-latest (Hugging Face)
+  - Mapeo de clases: neutral/positive → positive para clasificación binaria
+
+Métricas evaluadas:
+  - Accuracy, Precision, Recall, F1-score
+  - ROC-AUC, Log Loss
+  - Matrices de confusión por modelo
+
+
+RESULTADOS
+----------
+Modelo                          Accuracy    Observación
+------------------------------  ----------  ------------------------------------------
+TF-IDF + Logistic Regression    ~71%        Mejor modelo — balance precision/recall
+TF-IDF + Random Forest          ~70%        Resultado competitivo
+TF-IDF + BernoulliNB            ~68%        Baseline clásico
+RoBERTa (twitter-latest)        ~40%        Colapsa prediciendo casi todo como negativo
+
+
+EXPLICACIÓN DEL RESULTADO DE ROBERTA
+--------------------------------------
+El bajo rendimiento de RoBERTa no es un error de implementación — es un hallazgo
+técnico relevante. El modelo fue entrenado con tweets de 2018–2022+, mientras que
+el dataset contiene tweets de 2009–2011. El lenguaje, abreviaturas, slang y contexto
+emocional de ambos períodos difieren significativamente.
+
+Este fenómeno se denomina domain shift temporal y es un problema real en producción
+cuando se aplican modelos preentrenados a datos históricos sin fine-tuning previo.
+
+
+CONCLUSIONES
+------------
+1. Para datos históricos (pre-2015): TF-IDF + LogReg/RF son superiores y
+   significativamente más eficientes en tiempo de cómputo.
+
+2. Para tweets recientes (2023+): los transformers superan fácilmente el 80%
+   de accuracy sin necesidad de fine-tuning.
+
+3. Recomendación práctica: antes de usar un transformer out-of-the-box, verificar
+   la compatibilidad temporal del dataset con el período de entrenamiento del modelo.
+
+
+PRÓXIMOS PASOS
+--------------
+- Evaluar finiteautomata/bertweet-base-sentiment-analysis (más adaptado a tweets
+  de 2009–2014)
+- Fine-tuning ligero del transformer con un subset del dataset actual
+- Evaluar en datasets recientes (tweet_eval, SemEval 2023)
+- Desarrollar interfaz con Gradio o Streamlit para clasificación en tiempo real
+- Análisis de errores: identificar qué tipo de tweets confunde más a cada modelo
+
+
+TECNOLOGÍAS UTILIZADAS
+----------------------
+Python 3.9+ · scikit-learn · NLTK · Hugging Face Transformers · Pandas ·
+Matplotlib · Seaborn · Jupyter Notebook
