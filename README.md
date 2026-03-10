@@ -1,4 +1,4 @@
-# Análisis de Sentimiento en Tweets – Clasificación Binaria (positivo/negativo)
+# Análisis de Sentimiento en Tweets — TF-IDF vs RoBERTa
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
